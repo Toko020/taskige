@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<a class="back" href="{{ url_for('index') }}">← <span data-i18n="task.back">Back</span></a>
+
+<section class="task-head">
+  <div class="task-title-row">
+    <h1>{{ task["title"] }}</h1>
+    <span class="badge {{ 'paid' if task['is_paid'] else 'free' }}">
+      {% if task["is_paid"] %}
+        <span data-i18n="task.paid">Paid</span>{% if task["payment_amount"] %}: {{ task["payment_amount"] }}{% endif %}
+      {% else %}
+        <span data-i18n="task.free">Free</span>
+      {% endif %}
+    </span>
+  </div>
+
+  <div class="task-meta">
+    <span>📍 {{ task["location"] }}</span>
+    <span class="muted"><span data-i18n="task.by">by</span> {{ task["full_name"] }}</span>
+  </div>
+
+  <div class="panel">
+    <p class="task-desc">{{ task["description"] }}</p>
+  </div>
+</section>
+
+<section class="comments">
+  <h2 data-i18n="comments.title">Comments</h2>
+
+  <div id="commentList" class="comment-list">
+    {% for c in comments %}
+      <div class="comment">
+        <div class="comment-head">
+          <strong>{{ c["full_name"] }}</strong>
+          <span class="muted small">{{ c["created_at"][:19].replace('T',' ') }}</span>
+        </div>
+        <div class="comment-body">{{ c["content"] }}</div>
+      </div>
+    {% else %}
+      <div class="empty small">
+        <p class="muted" data-i18n="comments.empty">No comments yet. Start the conversation.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="panel">
+    <form id="commentForm" class="form">
+      <label>
+        <span data-i18n="comments.write">Write a comment</span>
+        <textarea id="commentInput" rows="3" maxlength="1000" required></textarea>
+      </label>
+      <button class="btn primary" type="submit" data-i18n="comments.send">Send</button>
+      <div id="commentError" class="error"></div>
+    </form>
+  </div>
+</section>
+
+<script>
+  window.TASK_ID = {{ task["id"] }};
+</script>
+{% endblock %}

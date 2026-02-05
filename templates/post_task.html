@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+  <h1 data-i18n="post.title">Post a task</h1>
+  <p class="muted" data-i18n="post.subtitle">Minimal form: what you need, where you need it, paid or free.</p>
+</section>
+
+<div class="panel">
+  <form method="post" class="form">
+    <label>
+      <span data-i18n="post.taskTitle">Task title</span>
+      <input name="title" type="text" required placeholder="e.g., Help moving a sofa" />
+    </label>
+
+    <label>
+      <span data-i18n="post.where">Where do you need help?</span>
+      <input name="location" type="text" required placeholder="e.g., Tbilisi, Saburtalo" />
+    </label>
+
+    <label>
+      <span data-i18n="post.details">What do you need help with?</span>
+      <textarea name="description" rows="5" required placeholder="Describe the task..."></textarea>
+    </label>
+
+    <label class="row">
+      <input id="isPaid" name="is_paid" type="checkbox" />
+      <span data-i18n="post.paidToggle">Paid task</span>
+    </label>
+
+    <label id="paymentWrap" class="hidden">
+      <span data-i18n="post.payment">Payment (optional)</span>
+      <input name="payment_amount" type="text" placeholder="e.g., 50 GEL / 20$ / Negotiable" />
+    </label>
+
+    <button class="btn primary" type="submit" data-i18n="post.submit">Publish</button>
+  </form>
+</div>
+
+<script>
+  // Simple show/hide payment field
+  const cb = document.getElementById("isPaid");
+  const wrap = document.getElementById("paymentWrap");
+  cb.addEventListener("change", () => {
+    wrap.classList.toggle("hidden", !cb.checked);
+  });
+</script>
+{% endblock %}

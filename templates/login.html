@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-card">
+  <h1 data-i18n="auth.loginTitle">Log in</h1>
+  <p class="muted" data-i18n="auth.loginSubtitle">Access TaskiGE tasks and post your own.</p>
+
+  <form method="post" class="form">
+    <label>
+      <span data-i18n="auth.email">Email</span>
+      <input name="email" type="email" required />
+    </label>
+
+    <label>
+      <span data-i18n="auth.password">Password</span>
+      <input name="password" type="password" required />
+    </label>
+
+    <button class="btn primary" type="submit" data-i18n="auth.loginBtn">Log in</button>
+  </form>
+
+  <div class="auth-links">
+    <a href="{{ url_for('register') }}" data-i18n="auth.noAccount">No account? Register</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TaskiGE</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-left">
+      <a class="logo" href="{{ url_for('index') }}">TaskiGE</a>
+    </div>
+
+    <div class="nav-right">
+      <select id="langSelect" class="lang-select" aria-label="Language">
+        <option value="ENG">ENG</option>
+        <option value="GEO">GEO</option>
+        <option value="RUS">RUS</option>
+      </select>
+
+      {% if user %}
+        <a class="btn ghost" href="{{ url_for('post_task') }}" data-i18n="nav.postTask">Post Task</a>
+        <a class="btn ghost" href="{{ url_for('logout') }}" data-i18n="nav.logout">Logout</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for msg in messages %}
+            <div class="flash-item">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <span>© {{ 2026 }} TaskiGE</span>
+  </footer>
+</body>
+</html>

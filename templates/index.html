@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+  <h1 data-i18n="main.title">Available tasks</h1>
+  <p class="muted" data-i18n="main.subtitle">Pick a task and comment to communicate.</p>
+</section>
+
+<section class="grid">
+  {% for t in tasks %}
+    <a class="card" href="{{ url_for('task_detail', task_id=t['id']) }}">
+      <div class="card-top">
+        <h3>{{ t["title"] }}</h3>
+        <span class="badge {{ 'paid' if t['is_paid'] else 'free' }}">
+          {% if t["is_paid"] %}
+            <span data-i18n="task.paid">Paid</span>{% if t["payment_amount"] %}: {{ t["payment_amount"] }}{% endif %}
+          {% else %}
+            <span data-i18n="task.free">Free</span>
+          {% endif %}
+        </span>
+      </div>
+
+      <p class="card-desc">{{ t["description"][:120] }}{% if t["description"]|length > 120 %}…{% endif %}</p>
+
+      <div class="card-meta">
+        <span>📍 {{ t["location"] }}</span>
+        <span class="muted">
+          <span data-i18n="task.by">by</span> {{ t["full_name"] }}
+        </span>
+      </div>
+    </a>
+  {% else %}
+    <div class="empty">
+      <h3 data-i18n="main.emptyTitle">No tasks yet</h3>
+      <p class="muted" data-i18n="main.emptySubtitle">Be the first to post a task.</p>
+      <a class="btn primary" href="{{ url_for('post_task') }}" data-i18n="nav.postTask">Post Task</a>
+    </div>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-card">
+  <h1 data-i18n="auth.registerTitle">Create account</h1>
+  <p class="muted" data-i18n="auth.registerSubtitle">Register to access TaskiGE.</p>
+
+  <form method="post" class="form">
+    <label>
+      <span data-i18n="auth.fullName">Full name</span>
+      <input name="full_name" type="text" required />
+    </label>
+
+    <label>
+      <span data-i18n="auth.email">Email</span>
+      <input name="email" type="email" required />
+    </label>
+
+    <label>
+      <span data-i18n="auth.password">Set password</span>
+      <input name="password" type="password" required minlength="6" />
+    </label>
+
+    <button class="btn primary" type="submit" data-i18n="auth.registerBtn">Register</button>
+  </form>
+
+  <div class="auth-links">
+    <a href="{{ url_for('login') }}" data-i18n="auth.haveAccount">Already have an account? Log in</a>
+  </div>
+</div>
+{% endblock %}
