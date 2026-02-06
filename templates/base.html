@@ -1,38 +1,59 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TaskiGE</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  <!-- PWA -->
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <meta name="theme-color" content="#ffffff">
+ <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/ios/apple-touch-icon-180.png') }}">
+<link rel="apple-touch-icon" sizes="167x167" href="{{ url_for('static', filename='icons/ios/apple-touch-icon-167.png') }}">
+<link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename='icons/ios/apple-touch-icon-152.png') }}">
+<link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename='icons/ios/apple-touch-icon-120.png') }}">
+
+
+  <!-- Styles + JS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <script defer src="{{ url_for('static', filename='app.js') }}"></script>
 </head>
+
 <body>
-  <header class="nav">
+  <header class="navbar">
     <div class="nav-left">
       <a class="logo" href="{{ url_for('index') }}">TaskiGE</a>
     </div>
 
     <div class="nav-right">
-      <select id="langSelect" class="lang-select" aria-label="Language">
-        <option value="ENG">ENG</option>
-        <option value="GEO">GEO</option>
-        <option value="RUS">RUS</option>
-      </select>
+      <a class="btn" href="{{ url_for('post_task') }}" data-i18n="post_task">Post Task</a>
+      <a class="btn" href="{{ url_for('about') }}" data-i18n="about_nav">About</a>
 
-      {% if user %}
-        <a class="btn ghost" href="{{ url_for('post_task') }}" data-i18n="nav.postTask">Post Task</a>
-        <a class="btn ghost" href="{{ url_for('logout') }}" data-i18n="nav.logout">Logout</a>
-      {% endif %}
+      <button class="btn" id="installBtn" type="button" style="display:none;" data-i18n="install_app">
+        Install App
+      </button>
+
+      <div class="lang">
+        <button class="btn btn-small" id="langBtn" type="button">
+          <span id="langLabel">EN</span> ▼
+        </button>
+        <div class="lang-menu" id="langMenu">
+          <button type="button" class="lang-item" data-lang="en">ENG</button>
+          <button type="button" class="lang-item" data-lang="ka">GEO</button>
+          <button type="button" class="lang-item" data-lang="ru">RUS</button>
+        </div>
+      </div>
+
+      <a class="btn" href="{{ url_for('logout') }}" data-i18n="logout">Logout</a>
     </div>
   </header>
 
-  <main class="container">
-    {% with messages = get_flashed_messages() %}
+  <main class="page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div class="flash">
-          {% for msg in messages %}
-            <div class="flash-item">{{ msg }}</div>
+        <div class="flash-wrap">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
           {% endfor %}
         </div>
       {% endif %}
@@ -42,7 +63,35 @@
   </main>
 
   <footer class="footer">
-    <span>© {{ 2026 }} TaskiGE</span>
+    <div class="footer-inner">
+      <span>© 2026 TaskiGE</span>
+      <span class="footer-links">
+        <a href="{{ url_for('about') }}" data-i18n="about_nav">About</a> ·
+        <a href="#" data-i18n="contact">Contact</a> ·
+        <a href="#" data-i18n="terms">Terms</a> ·
+        <a href="#" data-i18n="privacy">Privacy</a>
+      </span>
+    </div>
   </footer>
+
+  <!-- Install modal MUST be inside body -->
+  <div class="modal" id="installModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <strong data-i18n="install_title">Install TaskiGE</strong>
+        <button class="btn btn-small" id="installClose" type="button">✕</button>
+      </div>
+      <div class="modal-body" id="installText"></div>
+    </div>
+  </div>
+
+  <!-- Service worker register should be near end of body -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/static/sw.js");
+      });
+    }
+  </script>
 </body>
 </html>

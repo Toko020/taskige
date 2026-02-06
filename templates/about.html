@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="center">
+  <article class="card">
+    <div class="card-body">
+      <h2 class="title" data-i18n="about_title">About TaskiGE</h2>
+
+      <p class="desc" data-i18n="about_intro">
+        TaskiGE is a simple community website where people can post tasks and get help from others.
+        Posting tasks is free, and using the website is free.
+      </p>
+
+      <div class="meta">
+        <div class="meta-row">
+          <span class="meta-item" data-i18n="about_free">
+            ✅ 100% free to post tasks — no fees, no subscriptions.
+          </span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-item" data-i18n="about_goal">
+            🎯 Our goal is to make everyday help fast and easy — one clean place to ask and respond.
+          </span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-item" data-i18n="about_simple">
+            🖤 Minimal design, simple pages, no complicated steps.
+          </span>
+        </div>
+      </div>
+
+      <h3 class="subtitle" data-i18n="about_how_title">How it works</h3>
+      <ul class="list">
+        <li data-i18n="about_step1">Create an account (email + name + password). Optional profile photo.</li>
+        <li data-i18n="about_step2">Post a task: write what you need, when you need help, and choose Paid or Free.</li>
+        <li data-i18n="about_step3">Other users can comment. Only they can see their own comments. The task author can see all.</li>
+      </ul>
+
+      <h3 class="subtitle" data-i18n="about_rules_title">Basic rules</h3>
+      <ul class="list">
+        <li data-i18n="about_rule1">Be respectful. No harassment, hate, or spam.</li>
+        <li data-i18n="about_rule2">Do not share private information (bank cards, passwords, etc.).</li>
+        <li data-i18n="about_rule3">Tasks should be clear: what you need, where, when, and (optional) payment.</li>
+      </ul>
+
+      <h3 class="subtitle" data-i18n="about_privacy_title">Privacy & safety</h3>
+      <p class="desc" data-i18n="about_privacy">
+        We keep things minimal. Comments are private to the commenter and visible to the task author.
+        You stay in control of what you post. Avoid sharing sensitive personal data.
+      </p>
+
+      <h3 class="subtitle" data-i18n="about_delete_title">Auto-delete (72 hours)</h3>
+      <p class="desc" data-i18n="about_delete">
+        To keep the website clean and fresh, tasks automatically delete after 72 hours.
+        Task authors can also delete their own tasks anytime.
+      </p>
+
+      <h3 class="subtitle" data-i18n="about_disclaimer_title">Disclaimer</h3>
+      <p class="desc" data-i18n="about_disclaimer">
+        TaskiGE is a community platform. Users are responsible for agreements, payments, and outcomes.
+        Always be careful when meeting someone in real life — prefer public places and clear communication.
+      </p>
+    </div>
+  </article>
+</div>
+
+{% endblock %}

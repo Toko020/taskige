@@ -1,61 +1,106 @@
 {% extends "base.html" %}
 {% block content %}
-<a class="back" href="{{ url_for('index') }}">← <span data-i18n="task.back">Back</span></a>
 
-<section class="task-head">
-  <div class="task-title-row">
-    <h1>{{ task["title"] }}</h1>
-    <span class="badge {{ 'paid' if task['is_paid'] else 'free' }}">
-      {% if task["is_paid"] %}
-        <span data-i18n="task.paid">Paid</span>{% if task["payment_amount"] %}: {{ task["payment_amount"] }}{% endif %}
-      {% else %}
-        <span data-i18n="task.free">Free</span>
-      {% endif %}
-    </span>
-  </div>
-
-  <div class="task-meta">
-    <span>📍 {{ task["location"] }}</span>
-    <span class="muted"><span data-i18n="task.by">by</span> {{ task["full_name"] }}</span>
-  </div>
-
-  <div class="panel">
-    <p class="task-desc">{{ task["description"] }}</p>
-  </div>
-</section>
-
-<section class="comments">
-  <h2 data-i18n="comments.title">Comments</h2>
-
-  <div id="commentList" class="comment-list">
-    {% for c in comments %}
-      <div class="comment">
-        <div class="comment-head">
-          <strong>{{ c["full_name"] }}</strong>
-          <span class="muted small">{{ c["created_at"][:19].replace('T',' ') }}</span>
+<div class="center">
+  <article class="card">
+    <div class="card-head">
+      <div class="user">
+        <img class="avatar"
+             src="{{ url_for('static', filename=(task.author.avatar_path if task.author.avatar_path else 'img/avatar-placeholder.png')) }}"
+             alt="avatar" />
+        <div class="user-meta">
+          <div class="user-line">
+            <strong>{{ task.author.full_name }}</strong>
+            <span class="muted">{{ time_ago(task.created_at) }}</span>
+          </div>
         </div>
-        <div class="comment-body">{{ c["content"] }}</div>
       </div>
-    {% else %}
-      <div class="empty small">
-        <p class="muted" data-i18n="comments.empty">No comments yet. Start the conversation.</p>
+
+      {% if is_author %}
+        <form method="POST" action="{{ url_for('delete_task', task_id=task.id) }}"
+              onsubmit="return confirm('Delete this task?');">
+          <button class="btn btn-danger" type="submit" data-i18n="delete_task">Delete</button>
+        </form>
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+      <h2 class="title">{{ task.title }}</h2>
+      <p class="desc">{{ task.description }}</p>
+
+      <div class="meta">
+        <div class="meta-row">
+          <span class="meta-item">📍 {{ task.location }}</span>
+        </div>
+        <div class="meta-row">
+          {% if task.payment_type == "Paid" %}
+            <span class="meta-item">💲 Paid — ${{ task.payment_amount if task.payment_amount else 0 }}</span>
+          {% else %}
+            <span class="meta-item">💲 Free</span>
+          {% endif %}
+        </div>
+        <div class="meta-row">
+          <span class="meta-item" data-i18n="help_until_label">When you need help:</span>
+          <span class="meta-item"><strong>{{ task.help_until }}</strong></span>
+        </div>
       </div>
-    {% endfor %}
-  </div>
 
-  <div class="panel">
-    <form id="commentForm" class="form">
-      <label>
-        <span data-i18n="comments.write">Write a comment</span>
-        <textarea id="commentInput" rows="3" maxlength="1000" required></textarea>
-      </label>
-      <button class="btn primary" type="submit" data-i18n="comments.send">Send</button>
-      <div id="commentError" class="error"></div>
-    </form>
-  </div>
-</section>
+      <hr class="line"/>
 
-<script>
-  window.TASK_ID = {{ task["id"] }};
-</script>
+      <section class="comments">
+        <h3 class="subtitle" data-i18n="comments">Comments</h3>
+
+        {% if not is_author %}
+          <p class="muted">You can only see your own comments. The task author can see all comments.</p>
+        {% endif %}
+
+        <form class="comment-form" method="POST" action="{{ url_for('add_comment', task_id=task.id) }}">
+          <textarea class="input textarea" name="content" rows="3" required placeholder="Write a comment..."></textarea>
+          <button class="btn" type="submit" data-i18n="send">Send</button>
+        </form>
+
+        <div class="comment-list">
+          {% for c in comments %}
+            <div class="comment">
+              <div class="comment-head">
+                <div class="comment-left">
+                  <strong>{{ c.author.full_name }}</strong>
+                  <span class="muted">{{ time_ago(c.created_at) }}</span>
+
+                  {% if not is_author %}
+                    <span class="badge">(Visible to author)</span>
+                  {% endif %}
+                </div>
+
+                {% if c.author_id == user.id %}
+                  <div class="comment-actions">
+                    <form method="POST" action="{{ url_for('delete_comment', comment_id=c.id) }}"
+                          onsubmit="return confirm('Delete your comment?');">
+                      <button class="btn btn-small" type="submit">Delete</button>
+                    </form>
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="comment-body">{{ c.content }}</div>
+
+              {% if c.author_id == user.id %}
+                <details class="edit-box">
+                  <summary class="edit-link">Edit</summary>
+                  <form method="POST" action="{{ url_for('edit_comment', comment_id=c.id) }}" class="edit-form">
+                    <textarea class="input textarea" name="content" rows="3" required>{{ c.content }}</textarea>
+                    <button class="btn btn-small" type="submit">Save</button>
+                  </form>
+                </details>
+              {% endif %}
+            </div>
+          {% else %}
+            <p class="muted" data-i18n="no_comments">No comments yet.</p>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </article>
+</div>
+
 {% endblock %}

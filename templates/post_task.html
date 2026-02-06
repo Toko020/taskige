@@ -1,47 +1,65 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="page-head">
-  <h1 data-i18n="post.title">Post a task</h1>
-  <p class="muted" data-i18n="post.subtitle">Minimal form: what you need, where you need it, paid or free.</p>
-</section>
 
-<div class="panel">
-  <form method="post" class="form">
-    <label>
-      <span data-i18n="post.taskTitle">Task title</span>
-      <input name="title" type="text" required placeholder="e.g., Help moving a sofa" />
-    </label>
+<div class="center">
+  <div class="card card-form">
+    <h2 class="title" data-i18n="create_task">Create Task</h2>
 
-    <label>
-      <span data-i18n="post.where">Where do you need help?</span>
-      <input name="location" type="text" required placeholder="e.g., Tbilisi, Saburtalo" />
-    </label>
+    <form method="POST" action="{{ url_for('post_task_post') }}" class="form">
+      <label class="label" data-i18n="task_title">Title</label>
+      <input class="input" name="title" required maxlength="200" />
 
-    <label>
-      <span data-i18n="post.details">What do you need help with?</span>
-      <textarea name="description" rows="5" required placeholder="Describe the task..."></textarea>
-    </label>
+      <label class="label" data-i18n="task_desc">Description</label>
+      <textarea class="input textarea" name="description" required rows="5"></textarea>
 
-    <label class="row">
-      <input id="isPaid" name="is_paid" type="checkbox" />
-      <span data-i18n="post.paidToggle">Paid task</span>
-    </label>
+      <div class="grid2">
+        <div>
+          <label class="label" data-i18n="location">Location</label>
+          <select class="input" name="location">
+            <option>Remote</option>
+            <option>On-site</option>
+          </select>
+        </div>
 
-    <label id="paymentWrap" class="hidden">
-      <span data-i18n="post.payment">Payment (optional)</span>
-      <input name="payment_amount" type="text" placeholder="e.g., 50 GEL / 20$ / Negotiable" />
-    </label>
+        <div>
+          <label class="label" data-i18n="help_until_label">When you need help</label>
+          <input class="input" name="help_until" placeholder="e.g. Tomorrow 18:00" required />
+        </div>
+      </div>
 
-    <button class="btn primary" type="submit" data-i18n="post.submit">Publish</button>
-  </form>
+      <div class="grid2">
+        <div>
+          <label class="label" data-i18n="payment">Payment</label>
+          <select class="input" name="payment_type" id="paymentType">
+            <option value="Free">Free</option>
+            <option value="Paid">Paid</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="label" data-i18n="amount">Amount ($)</label>
+          <input class="input" name="payment_amount" id="paymentAmount" type="number" min="0" placeholder="50" disabled />
+        </div>
+      </div>
+
+      <button class="btn btn-wide" type="submit" data-i18n="post_task">Post Task</button>
+    </form>
+  </div>
 </div>
 
 <script>
-  // Simple show/hide payment field
-  const cb = document.getElementById("isPaid");
-  const wrap = document.getElementById("paymentWrap");
-  cb.addEventListener("change", () => {
-    wrap.classList.toggle("hidden", !cb.checked);
+  // Small inline logic for enabling amount when "Paid" is selected
+  document.addEventListener("DOMContentLoaded", () => {
+    const type = document.getElementById("paymentType");
+    const amount = document.getElementById("paymentAmount");
+    const toggle = () => {
+      const paid = type.value === "Paid";
+      amount.disabled = !paid;
+      if (!paid) amount.value = "";
+    };
+    type.addEventListener("change", toggle);
+    toggle();
   });
 </script>
+
 {% endblock %}

@@ -1,39 +1,54 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="page-head">
-  <h1 data-i18n="main.title">Available tasks</h1>
-  <p class="muted" data-i18n="main.subtitle">Pick a task and comment to communicate.</p>
-</section>
 
-<section class="grid">
+<div class="feed">
   {% for t in tasks %}
-    <a class="card" href="{{ url_for('task_detail', task_id=t['id']) }}">
-      <div class="card-top">
-        <h3>{{ t["title"] }}</h3>
-        <span class="badge {{ 'paid' if t['is_paid'] else 'free' }}">
-          {% if t["is_paid"] %}
-            <span data-i18n="task.paid">Paid</span>{% if t["payment_amount"] %}: {{ t["payment_amount"] }}{% endif %}
-          {% else %}
-            <span data-i18n="task.free">Free</span>
-          {% endif %}
-        </span>
+    <article class="card">
+      <div class="card-head">
+        <div class="user">
+          <img class="avatar"
+               src="{{ url_for('static', filename=(t.author.avatar_path if t.author.avatar_path else 'img/avatar-placeholder.png')) }}"
+               alt="avatar" />
+          <div class="user-meta">
+            <div class="user-line">
+              <strong>{{ t.author.full_name }}</strong>
+              <span class="muted">{{ time_ago(t.created_at) }}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <p class="card-desc">{{ t["description"][:120] }}{% if t["description"]|length > 120 %}…{% endif %}</p>
+      <div class="card-body">
+        <h2 class="title">{{ t.title }}</h2>
+        <p class="desc">{{ t.description }}</p>
 
-      <div class="card-meta">
-        <span>📍 {{ t["location"] }}</span>
-        <span class="muted">
-          <span data-i18n="task.by">by</span> {{ t["full_name"] }}
-        </span>
+        <div class="meta">
+          <div class="meta-row">
+            <span class="meta-item">📍 {{ t.location }}</span>
+          </div>
+          <div class="meta-row">
+            {% if t.payment_type == "Paid" %}
+              <span class="meta-item">💲 Paid — ${{ t.payment_amount if t.payment_amount else 0 }}</span>
+            {% else %}
+              <span class="meta-item">💲 Free</span>
+            {% endif %}
+          </div>
+          <div class="meta-row">
+            <span class="meta-item" data-i18n="help_until_label">When you need help:</span>
+            <span class="meta-item"><strong>{{ t.help_until }}</strong></span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <a class="btn btn-wide" href="{{ url_for('task_detail', task_id=t.id) }}" data-i18n="view_task">View Task</a>
+        </div>
       </div>
-    </a>
+    </article>
   {% else %}
     <div class="empty">
-      <h3 data-i18n="main.emptyTitle">No tasks yet</h3>
-      <p class="muted" data-i18n="main.emptySubtitle">Be the first to post a task.</p>
-      <a class="btn primary" href="{{ url_for('post_task') }}" data-i18n="nav.postTask">Post Task</a>
+      <p data-i18n="no_tasks">No tasks yet. Post the first one.</p>
     </div>
   {% endfor %}
-</section>
+</div>
+
 {% endblock %}

@@ -1,25 +1,62 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="auth-card">
-  <h1 data-i18n="auth.loginTitle">Log in</h1>
-  <p class="muted" data-i18n="auth.loginSubtitle">Access TaskiGE tasks and post your own.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TaskiGE">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
 
-  <form method="post" class="form">
-    <label>
-      <span data-i18n="auth.email">Email</span>
-      <input name="email" type="email" required />
-    </label>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TaskiGE - Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+</head>
+<body>
+  <main class="auth-page">
+    <div class="auth-card">
+      <h1 class="auth-title">TaskiGE</h1>
+      <p class="auth-sub" data-i18n="login_sub">Login to continue</p>
 
-    <label>
-      <span data-i18n="auth.password">Password</span>
-      <input name="password" type="password" required />
-    </label>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-wrap">
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
 
-    <button class="btn primary" type="submit" data-i18n="auth.loginBtn">Log in</button>
-  </form>
+      <form method="POST" action="{{ url_for('login_post') }}" class="form">
+        <label class="label" data-i18n="email">Email</label>
+        <input class="input" type="email" name="email" required />
 
-  <div class="auth-links">
-    <a href="{{ url_for('register') }}" data-i18n="auth.noAccount">No account? Register</a>
-  </div>
-</div>
-{% endblock %}
+        <label class="label" data-i18n="password">Password</label>
+        <input class="input" type="password" name="password" required minlength="6" />
+
+        <button class="btn btn-wide" type="submit" data-i18n="login">Login</button>
+      </form>
+
+      <p class="auth-alt">
+        <span data-i18n="no_account">No account?</span>
+        <a href="{{ url_for('register') }}" data-i18n="register">Register</a>
+      </p>
+
+      <div class="auth-lang">
+        <div class="lang">
+          <button class="btn btn-small" id="langBtn" type="button">
+            <span id="langLabel">EN</span> ▼
+          </button>
+          <div class="lang-menu" id="langMenu">
+            <button type="button" class="lang-item" data-lang="en">ENG</button>
+            <button type="button" class="lang-item" data-lang="ka">GEO</button>
+            <button type="button" class="lang-item" data-lang="ru">RUS</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

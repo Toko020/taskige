@@ -1,30 +1,68 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="auth-card">
-  <h1 data-i18n="auth.registerTitle">Create account</h1>
-  <p class="muted" data-i18n="auth.registerSubtitle">Register to access TaskiGE.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TaskiGE">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
 
-  <form method="post" class="form">
-    <label>
-      <span data-i18n="auth.fullName">Full name</span>
-      <input name="full_name" type="text" required />
-    </label>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TaskiGE - Register</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+</head>
+<body>
+  <main class="auth-page">
+    <div class="auth-card">
+      <h1 class="auth-title">TaskiGE</h1>
+      <p class="auth-sub" data-i18n="register_sub">Create your account</p>
 
-    <label>
-      <span data-i18n="auth.email">Email</span>
-      <input name="email" type="email" required />
-    </label>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-wrap">
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
 
-    <label>
-      <span data-i18n="auth.password">Set password</span>
-      <input name="password" type="password" required minlength="6" />
-    </label>
+      <form method="POST" action="{{ url_for('register_post') }}" class="form" enctype="multipart/form-data">
+        <label class="label" data-i18n="full_name">Full name</label>
+        <input class="input" type="text" name="full_name" required />
 
-    <button class="btn primary" type="submit" data-i18n="auth.registerBtn">Register</button>
-  </form>
+        <label class="label" data-i18n="email">Email</label>
+        <input class="input" type="email" name="email" required />
 
-  <div class="auth-links">
-    <a href="{{ url_for('login') }}" data-i18n="auth.haveAccount">Already have an account? Log in</a>
-  </div>
-</div>
-{% endblock %}
+        <label class="label" data-i18n="password">Set password</label>
+        <input class="input" type="password" name="password" required minlength="6" />
+
+        <label class="label" data-i18n="avatar_optional">Profile picture (optional)</label>
+        <input class="input" type="file" name="avatar" accept="image/*" />
+
+        <button class="btn btn-wide" type="submit" data-i18n="register">Register</button>
+      </form>
+
+      <p class="auth-alt">
+        <span data-i18n="have_account">Already have an account?</span>
+        <a href="{{ url_for('login') }}" data-i18n="login">Login</a>
+      </p>
+
+      <div class="auth-lang">
+        <div class="lang">
+          <button class="btn btn-small" id="langBtn" type="button">
+            <span id="langLabel">EN</span> ▼
+          </button>
+          <div class="lang-menu" id="langMenu">
+            <button type="button" class="lang-item" data-lang="en">ENG</button>
+            <button type="button" class="lang-item" data-lang="ka">GEO</button>
+            <button type="button" class="lang-item" data-lang="ru">RUS</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
